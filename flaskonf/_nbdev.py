@@ -3,9 +3,11 @@
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"open_json": "10_api.ipynb",
+         "open_file": "10_api.ipynb",
          "mkdir": "10_api.ipynb",
          "clean_up_string": "10_api.ipynb",
          "error_printer": "10_api.ipynb",
+         "time_str": "10_api.ipynb",
          "Directories": "10_api.ipynb",
          "FlaskonfAPI": "10_api.ipynb"}
 
