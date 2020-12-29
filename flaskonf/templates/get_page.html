@@ -50,6 +50,10 @@
                             Input Data
                         </h5>
                     </label>
+
+                    <div id="example_btns">
+
+                    </div>
                     <textarea class="form-control m-2" name="input_data"
                     id="input_data" cols="30" rows="10"></textarea>
                     <hr>
@@ -71,6 +75,8 @@
                 </div>
                 
             </div>
+
+            <div id="examples_data" style="display:none">{{examples}}</div>
         </div>
 
 
@@ -103,6 +109,29 @@
                 dom
             )
             return return_dom
+        }
+
+        var get_examples = () =>{
+            var data = JSON.parse($("#examples_data").text())
+            return data
+        }
+
+        var create_example_btn = (filename, data) => {
+            var btn = document.createElement("button")
+            btn.className = "btn btn-primary btn-sm"
+            $(btn).html(filename)
+            $(btn).click(e=>{
+                $("#input_data").html(JSON.stringify(data, 0, 2))
+            })
+            return btn
+        }
+
+        var set_examples = (examples) =>{
+            
+            for(var filename in examples){
+                var dt = JSON.parse(examples[filename])
+                $("#example_btns").append(create_example_btn(filename, dt))
+            }
         }
 
         var log_output=(return_dom, data, style)=>{
@@ -139,5 +168,7 @@
         }
 
         $("#test_btn").click(test_btn)
+
+        set_examples(get_examples())
     </script>
 </html>
