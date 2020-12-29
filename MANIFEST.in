@@ -1,0 +1,2 @@
+recursive-include flaskonf/static/ *
+recursive-include flaskonf/templates/ *

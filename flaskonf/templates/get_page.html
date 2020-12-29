@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{page_title}}</title>
+
+        <!-- Bootstrap CSS -->
+        <link href="/header/css/bootstrap.css" rel="stylesheet">
+        <!-- jQuery -->
+        <script src="/header/js/jquery.min.js"></script>
+        <!-- Bootstrap JavaScript -->
+        <script src="/header/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+
+        
+
+        <div class="p-5">
+            <h2 class="text-primary">
+                {{page_title}}
+            </h2>
+            <h3 class="text-primary">
+                Flaskonf API
+            </h3>
+
+            <div class="row">
+                <!-- left column -->
+                <div class="col-sm-6 p-2">
+                    <div class="btn-group">
+                        <button id="test_btn" class="btn btn-dark">
+                            test
+                        </button>
+                    </div>
+                    <hr>
+
+                    <label for="target_route" class="mt-2">
+                        <h5>
+                            Route
+                        </h5>
+                    </label>
+                    <input type="text" id='target_route'
+                    class="form-control m-2" disabled value="{{target_route}}"
+                    name="target_route">
+
+                    <label for="input_data" class="mt-2">
+                        <h5>
+                            Input Data
+                        </h5>
+                    </label>
+                    <textarea class="form-control m-2" name="input_data"
+                    id="input_data" cols="30" rows="10"></textarea>
+                    <hr>
+
+                    <h5 class="mt-2">
+                        Configuration
+                    </h5>
+                    {%if conf_data%}<pre class='form-control m-2' style="height:500px">{{conf_data}}</pre>{%endif%}
+                </div>
+
+                <!-- right column -->
+                <div class="col-sm-6 p-2">
+                    <h3>
+                        Test log
+                    </h3>
+                    <div id='log' class="card p-3">
+                        
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+
+    </body>
+
+    <script defer>
+        var get_input = ()=>{
+            try{
+                var input_data =  JSON.parse($("#input_data").val())
+            }catch{
+                var input_data = {error_msg: "no input data specified"}
+            }
+            var route = $("#target_route").val()
+            return {input_data, route}
+        }
+
+        var log_input=(route, input_data)=>{
+            var dom = document.createElement("div")
+            var return_dom = document.createElement("div")
+            dom.className="card p-2 m-2"
+            var now = new Date().toISOString()
+            
+            $(dom).html(`
+            <h6 class='p-1'><span class='text-dark p-1'>${route}</span> ${now}</h6>
+            <pre class="text-white bg-dark p-3">${JSON.stringify(input_data, 0 , 2)}</pre>
+            `)
+
+            $(dom).append(return_dom)
+            $("#log").prepend(
+                dom
+            )
+            return return_dom
+        }
+
+        var log_output=(return_dom, data, style)=>{
+            var now = new Date().toISOString()
+            $(return_dom).append(
+                `<h6 class='p-1 text-${style}'>${now}</h6>
+                <pre class="text-white bg-${style} p-3">${JSON.stringify(data, 0 , 2)}</pre>
+                `
+            )
+        }
+
+        var test_btn = () => {
+            var {input_data, route} = get_input();
+            var return_dom = log_input(route, input_data)
+
+            fetch(route, {
+                method:"POST",
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify(input_data)
+            })
+            .then(res=>res.json())
+            .then(
+                data=>{
+                    console.log(data)
+                        log_output(
+                            return_dom,
+                            data,
+                            "success",)
+            }).catch(
+                e=>{log_output(return_dom, {error:e.stack}, "danger")}
+            )
+        }
+
+        $("#test_btn").click(test_btn)
+    </script>
+</html>
