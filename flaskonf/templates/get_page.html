@@ -118,7 +118,7 @@
 
         var create_example_btn = (filename, data) => {
             var btn = document.createElement("button")
-            btn.className = "btn btn-primary btn-sm"
+            btn.className = "btn btn-primary btn-sm m-1"
             $(btn).html(filename)
             $(btn).click(e=>{
                 $("#input_data").html(JSON.stringify(data, 0, 2))
@@ -134,12 +134,38 @@
             }
         }
 
-        var log_output=(return_dom, data, style)=>{
+        var log_output=(return_dom, data, style, input_data)=>{
             var now = new Date().toISOString()
             $(return_dom).append(
                 `<h6 class='p-1 text-${style}'>${now}</h6>
                 <pre class="text-white bg-${style} p-3">${JSON.stringify(data, 0 , 2)}</pre>
                 `
+            )
+
+            var add_eg = document.createElement("button");
+            add_eg.className = "btn btn-secondary btn-sm"
+            $(add_eg).html("Set Example")
+
+            $(add_eg).click((e)=>{
+                fetch("{{add_route}}",
+                {
+                    method:"POST",
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify(input_data,0,2)
+                })
+                .then(res=>res.json())
+                .then(data=>{
+                    window.location=location.href
+                })
+                .catch(e=>{
+                    console.error(e)
+                })
+            })
+
+            $(return_dom).append(
+                add_eg
             )
         }
 
@@ -157,13 +183,12 @@
             .then(res=>res.json())
             .then(
                 data=>{
-                    console.log(data)
                         log_output(
                             return_dom,
                             data,
-                            "success",)
+                            "success",input_data)
             }).catch(
-                e=>{log_output(return_dom, {error:e.stack}, "danger")}
+                e=>{log_output(return_dom, {error:e.stack}, "danger", input_data)}
             )
         }
 
