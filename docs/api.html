@@ -289,96 +289,19 @@ description: "core part of API"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="FlaskonfAPI" class="doc_header"><code>class</code> <code>FlaskonfAPI</code><a href="https://github.com/raynardj/flaskonf/tree/master/flaskonf/api.py#L93" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FlaskonfAPI</code>(<strong><code>import_name</code></strong>, <strong><code>static_url_path</code></strong>=<em><code>None</code></em>, <strong><code>static_folder</code></strong>=<em><code>'static'</code></em>, <strong><code>static_host</code></strong>=<em><code>None</code></em>, <strong><code>host_matching</code></strong>=<em><code>False</code></em>, <strong><code>subdomain_matching</code></strong>=<em><code>False</code></em>, <strong><code>template_folder</code></strong>=<em><code>'templates'</code></em>, <strong><code>instance_path</code></strong>=<em><code>None</code></em>, <strong><code>instance_relative_config</code></strong>=<em><code>False</code></em>, <strong><code>root_path</code></strong>=<em><code>None</code></em>) :: <code>Flask</code></p>
 </blockquote>
-<p>The flask object implements a WSGI application and acts as the central
-object.  It is passed the name of the module or package of the
-application.  Once it is created it will act as a central registry for
-the view functions, the URL rules, template configuration and much more.</p>
-<p>The name of the package is used to resolve resources from inside the
-package or the folder the module is contained in depending on if the
-package parameter resolves to an actual python package (a folder with
-an :file:<code>__init__.py</code> file inside) or a standard module (just a <code>.py</code> file).</p>
-<p>For more information about resource loading, see :func:<code>open_resource</code>.</p>
-<p>Usually you create a :class:<code>Flask</code> instance in your main module or
-in the :file:<code>__init__.py</code> file of your package like this::</p>
-
-<pre><code>from flask import Flask
-app = Flask(__name__)
-
-</code></pre>
-<p>.. admonition:: About the First Parameter</p>
-
-<pre><code>The idea of the first parameter is to give Flask an idea of what
-belongs to your application.  This name is used to find resources
-on the filesystem, can be used by extensions to improve debugging
-information and a lot more.
-
-So it's important what you provide there.  If you are using a single
-module, `__name__` is always the correct value.  If you however are
-using a package, it's usually recommended to hardcode the name of
-your package there.
-
-For example if your application is defined in :file:`yourapplication/app.py`
-you should create it with one of the two versions below::
-
-    app = Flask('yourapplication')
-    app = Flask(__name__.split('.')[0])
-
-Why is that?  The application will work even with `__name__`, thanks
-to how resources are looked up.  However it will make debugging more
-painful.  Certain extensions can make assumptions based on the
-import name of your application.  For example the Flask-SQLAlchemy
-extension will look for the code in your application that triggered
-an SQL query in debug mode.  If the import name is not properly set
-up, that debugging information is lost.  (For example it would only
-pick up SQL queries in `yourapplication.app` and not
-`yourapplication.views.frontend`)
-
-</code></pre>
-<p>.. versionadded:: 0.7
-   The <code>static_url_path</code>, <code>static_folder</code>, and <code>template_folder</code>
-   parameters were added.</p>
-<p>.. versionadded:: 0.8
-   The <code>instance_path</code> and <code>instance_relative_config</code> parameters were
-   added.</p>
-<p>.. versionadded:: 0.11
-   The <code>root_path</code> parameter was added.</p>
-<p>.. versionadded:: 1.0
-   The <code>host_matching</code> and <code>static_host</code> parameters were added.</p>
-<p>.. versionadded:: 1.0
-   The <code>subdomain_matching</code> parameter was added. Subdomain
-   matching needs to be enabled manually now. Setting
-   :data:<code>SERVER_NAME</code> does not implicitly enable it.</p>
-<p>:param import_name: the name of the application package
-:param static_url_path: can be used to specify a different path for the
-                        static files on the web.  Defaults to the name
-                        of the <code>static_folder</code> folder.
-:param static_folder: the folder with static files that should be served
-                      at <code>static_url_path</code>.  Defaults to the <code>'static'</code>
-                      folder in the root path of the application.
-:param static_host: the host to use when adding the static route.
-    Defaults to None. Required when using <code>host_matching=True</code>
-    with a <code>static_folder</code> configured.
-:param host_matching: set <code>url_map.host_matching</code> attribute.
-    Defaults to False.
-:param subdomain_matching: consider the subdomain relative to
-    :data:<code>SERVER_NAME</code> when matching routes. Defaults to False.
-:param template_folder: the folder that contains the templates that should
-                        be used by the application.  Defaults to
-                        <code>'templates'</code> folder in the root path of the
-                        application.
-:param instance_path: An alternative instance path for the application.
-                      By default the folder <code>'instance'</code> next to the
-                      package or module is assumed to be the instance
-                      path.
-:param instance_relative_config: if set to <code>True</code> relative filenames
-                                 for loading the config are assumed to
-                                 be relative to the instance path instead
-                                 of the application root.
-:param root_path: Flask by default will automatically calculate the path
-                  to the root of the application.  In certain situations
-                  this cannot be achieved (for instance if the package
-                  is a Python 3 namespace package) and needs to be
-                  manually defined.</p>
+<h1 id="create-an-flask-app">create an flask app<a class="anchor-link" href="#create-an-flask-app"> </a></h1><p>app = FlaskonAPI("alpha_api")</p>
+<h1 id="assign-address-for-directories-full-of-json">assign address for directories full of json<a class="anchor-link" href="#assign-address-for-directories-full-of-json"> </a></h1><p>app.build_on_config(
+    confs_dir="../tests/confs/",
+    examples_dir="../tests/examples/"
+    )</p>
+<h1 id="create-an-api-blueprint">create an api blueprint<a class="anchor-link" href="#create-an-api-blueprint"> </a></h1><h1 id="with-such-blueprint,-we-can-have-an-api-for-each-configuration-file">with such blueprint, we can have an api for each configuration file<a class="anchor-link" href="#with-such-blueprint,-we-can-have-an-api-for-each-configuration-file"> </a></h1><p>@app.conf_route("/guide/")
+def build_city_guide(conf_file: str, conf: Dict):
+    logging.info(f"{conf}")
+    def guide_api(data: Dict):
+        user = data["user"]
+        return {"city_data": conf, "user": user}
+    return guide_api</p>
+<h1 id="run-api">run api<a class="anchor-link" href="#run-api"> </a></h1><p>app.run('0.0.0.0', port=1234)</p>
 
 </div>
 
@@ -407,6 +330,115 @@ pick up SQL queries in `yourapplication.app` and not
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Configuration directory</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>ls ../tests/confs/
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>la.json       shanghai.json
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Example directory</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>ls ../tests/examples/guide_shanghai
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>eg_201229_180805.json eg_201229_182134.json print_all.json
+eg_201229_181208.json eg_210506_125048.json
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>cat ../tests/examples/guide_shanghai/print_all.json
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{
+    &#34;user&#34;:&#34;admin&#34;
+}</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -424,6 +456,43 @@ pick up SQL queries in `yourapplication.app` and not
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="No-build-option">No build option<a class="anchor-link" href="#No-build-option"> </a></h3><blockquote><p>set <code>nobuild=False</code> you can build APIs with configuration in batch</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">conf_route</span><span class="p">(</span><span class="s2">&quot;/guide2/&quot;</span><span class="p">,</span> <span class="n">nobuild</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">guide_api</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;city_data2&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">user</span><span class="p">}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="With-Build">With Build<a class="anchor-link" href="#With-Build"> </a></h3><blockquote><p>If you want to load huge things to memory according to configuration, eg. load different transfromers with configuration</p>
+</blockquote>
+
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -434,9 +503,12 @@ pick up SQL queries in `yourapplication.app` and not
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">conf_route</span><span class="p">(</span><span class="s2">&quot;/guide/&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">build_city_guide</span><span class="p">(</span><span class="n">conf_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">conf</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">conf</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">guide_api</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
+    <span class="c1"># doing other things for building API here</span>
+    <span class="c1"># like load huge model into memory with configuration</span>
+    <span class="k">def</span> <span class="nf">guide_api</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
         <span class="n">user</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;city_data&quot;</span><span class="p">:</span><span class="n">conf</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">:</span><span class="n">user</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;city_data&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">user</span><span class="p">}</span>
     <span class="k">return</span> <span class="n">guide_api</span>
 </pre></div>
 
@@ -471,6 +543,8 @@ pick up SQL queries in `yourapplication.app` and not
 INFO:root:run config	la.json on route	/guide/la/
 INFO:root:{&#39;name&#39;: &#39;Shanghai&#39;, &#39;country&#39;: &#39;China&#39;, &#39;sites&#39;: [&#39;french concession&#39;, &#39;xin tiandi&#39;, &#39;disney resort&#39;]}
 INFO:root:run config	shanghai.json on route	/guide/shanghai/
+INFO:root:run config	la.json on route	/guide2/la/
+INFO:root:run config	shanghai.json on route	/guide2/shanghai/
 </pre>
 </div>
 </div>
@@ -514,34 +588,17 @@ INFO:root:run config	shanghai.json on route	/guide/shanghai/
 
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>INFO:werkzeug: * Running on http://0.0.0.0:9727/ (Press CTRL+C to quit)
-DEBUG:root:loading examples from ../tests/examples/guide_shanghai
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:20:34] &#34;<span class="ansi-white-fg">GET /guide/shanghai/ HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:20:34] &#34;<span class="ansi-white-fg">GET /header/css/bootstrap.css HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:20:34] &#34;<span class="ansi-white-fg">GET /header/js/bootstrap.min.js HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:20:34] &#34;<span class="ansi-white-fg">GET /header/js/jquery.min.js HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:20:34] &#34;<span class="ansi-white-fg">GET /header/js/bootstrap.min.js.map HTTP/1.1</span>&#34; 200 -
-ERROR:root:not found: /Users/xiaochen.zhang/github/flaskonf/flaskonf/static/css/bootstrap.css.map
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:20:34] &#34;<span class="ansi-white-fg">GET /header/css/bootstrap.css.map HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:20:42] &#34;<span class="ansi-white-fg">POST /guide/shanghai/ HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:21:28] &#34;<span class="ansi-white-fg">POST /guide/shanghai/ HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:21:34] &#34;<span class="ansi-white-fg">POST /guide/shanghai/add_example/ HTTP/1.1</span>&#34; 200 -
-DEBUG:root:loading examples from ../tests/examples/guide_shanghai
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:21:34] &#34;<span class="ansi-white-fg">GET /guide/shanghai/ HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:21:34] &#34;<span class="ansi-white-fg">GET /header/css/bootstrap.css HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:21:34] &#34;<span class="ansi-white-fg">GET /header/js/jquery.min.js HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:21:34] &#34;<span class="ansi-white-fg">GET /header/js/bootstrap.min.js HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:21:34] &#34;<span class="ansi-white-fg">GET /header/js/bootstrap.min.js.map HTTP/1.1</span>&#34; 200 -
-ERROR:root:not found: /Users/xiaochen.zhang/github/flaskonf/flaskonf/static/css/bootstrap.css.map
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:21:34] &#34;<span class="ansi-white-fg">GET /header/css/bootstrap.css.map HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:21:44] &#34;<span class="ansi-white-fg">POST /guide/shanghai/ HTTP/1.1</span>&#34; 200 -
-DEBUG:root:loading examples from ../tests/examples/guide_shanghai
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:22:59] &#34;<span class="ansi-white-fg">GET /guide/shanghai/ HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:22:59] &#34;<span class="ansi-white-fg">GET /header/js/jquery.min.js HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:22:59] &#34;<span class="ansi-white-fg">GET /header/css/bootstrap.css HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:22:59] &#34;<span class="ansi-white-fg">GET /header/js/bootstrap.min.js HTTP/1.1</span>&#34; 200 -
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:22:59] &#34;<span class="ansi-white-fg">GET /header/js/bootstrap.min.js.map HTTP/1.1</span>&#34; 200 -
-ERROR:root:not found: /Users/xiaochen.zhang/github/flaskonf/flaskonf/static/css/bootstrap.css.map
-INFO:werkzeug:127.0.0.1 - - [29/Dec/2020 18:22:59] &#34;<span class="ansi-white-fg">GET /header/css/bootstrap.css.map HTTP/1.1</span>&#34; 200 -
+DEBUG:root:loading examples from ../tests/examples/guide_la
+INFO:werkzeug:127.0.0.1 - - [06/May/2021 12:53:20] &#34;<span class="ansi-white-fg">GET /guide/la/ HTTP/1.1</span>&#34; 200 -
+ERROR:root:Traceback (most recent call last):
+  File &#34;&lt;ipython-input-19-24a00b29e23c&gt;&#34;, line 111, in wrapper
+    result = f(inputs)
+  File &#34;&lt;ipython-input-25-32c7827afe5e&gt;&#34;, line 8, in guide_api
+    user = data[&#34;user&#34;]
+KeyError: &#39;user&#39;
+
+INFO:werkzeug:127.0.0.1 - - [06/May/2021 12:54:05] &#34;<span class="ansi-magenta-intense-fg ansi-bold">POST /guide/la/ HTTP/1.1</span>&#34; 500 -
+INFO:werkzeug:127.0.0.1 - - [06/May/2021 12:54:37] &#34;<span class="ansi-white-fg">POST /guide/la/ HTTP/1.1</span>&#34; 200 -
 </pre>
 </div>
 </div>

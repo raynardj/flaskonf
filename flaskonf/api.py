@@ -91,6 +91,29 @@ class Directories:
 
 # Cell
 class FlaskonfAPI(Flask, Directories):
+    """
+    # create an flask app
+    app = FlaskonAPI("alpha_api")
+
+    # assign address for directories full of json
+    app.build_on_config(
+        confs_dir="../tests/confs/",
+        examples_dir="../tests/examples/"
+        )
+
+    # create an api blueprint
+    # with such blueprint, we can have an api for each configuration file
+    @app.conf_route("/guide/")
+    def build_city_guide(conf_file: str, conf: Dict):
+        logging.info(f"{conf}")
+        def guide_api(data: Dict):
+            user = data["user"]
+            return {"city_data": conf, "user": user}
+        return guide_api
+
+    # run api
+    app.run('0.0.0.0', port=1234)
+    """
     def set_dicrectory(
         app: Flask,
         confs_dir: Path=None,
@@ -121,25 +144,37 @@ class FlaskonfAPI(Flask, Directories):
         app.route(route, methods=["GET",])(wrapper)
 
 
+    def default_build(app, f):
+        def builder(conf_file, conf):
+            return f
+        return builder
+
     def conf_route(
         app,
         route,
-        filter_func: Callable = None
+        filter_func: Callable = None,
+        nobuild = False,
     ) -> Callable:
+        """
+        A decorator that will create new blueprint
+        """
         def decorator(f):
             app.blueprint.append(dict(
                 route=route,
-                build_func = f,
+                build_func = f if nobuild == False else app.default_build(f),
                 filter_func = filter_func,
                 name = f.__name__
             ))
             return f
         return decorator
 
+
     def create_api(
         app: Flask,
         route: str,
         name: str,
+        conf_file:str = None,
+        conf:dict = None,
         methods=["POST"],
         error_handler=error_printer,
         get_template_data=dict()):
@@ -151,12 +186,20 @@ class FlaskonfAPI(Flask, Directories):
         """
         def deco(f):
             def wrapper():
+                """
+                A wrapper with error handler
+                """
                 try:
                     if request.data:
                         data = json.loads(request.data)
                     else:
                         data = dict()
-                    result = f(data)
+                    inputs = dict(
+                        data = data,
+                        conf_file = conf_file,
+                        conf = conf
+                    )
+                    result = f(inputs)
                     return result, 200
                 except Exception as e:
                     return error_handler(e), 500
@@ -172,6 +215,12 @@ class FlaskonfAPI(Flask, Directories):
 
 
     def build_blueprint(app, blueprint):
+        """
+        blueprint: dict, contains the following
+            - filter_func: if we want to build the API
+            - build_func: the actual API function to build
+            - base route: str
+        """
         filter_func = blueprint["filter_func"]
         filter_func = filter_func if filter_func else lambda x,y:True
         build_func = blueprint["build_func"]
@@ -179,6 +228,7 @@ class FlaskonfAPI(Flask, Directories):
         api_name = clean_up_string(base_route)
 
         for conf_file, conf in app.all_configs.items():
+            # filter if we have to build this func
             if filter_func(conf_file, conf):
                 title = clean_up_string(conf_file.split(".")[0])
                 target_route = str(Path(base_route)/title)+"/"
@@ -200,6 +250,8 @@ class FlaskonfAPI(Flask, Directories):
                     target_route,
                     f"{api_name}_{title}",
                     get_template_data=template_data,
+                    conf_file = conf_file,
+                    conf=conf
                 )(built_func)
 
                 # api for add example
@@ -207,7 +259,8 @@ class FlaskonfAPI(Flask, Directories):
                     add_route,
                     f"{api_name}_{title}_add_example"
                 )
-                def add_example_file(data):
+                def add_example_file(inputs):
+                    data = inputs['data']
                     example_path = Path(f"{api_name}_{title}")/f"eg_{time_str()}.json"
                     with open(app.examples_dir/example_path, "w") as f:
                         f.write(json.dumps(data))
@@ -220,6 +273,7 @@ class FlaskonfAPI(Flask, Directories):
     def build_header(app):
         """
         send header files from static
+        htype: str, like js/ css
         """
         @app.route("/header/<htype>/<filename>", methods=["GET",])
         def open_header(htype, filename):
