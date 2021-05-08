@@ -474,6 +474,7 @@ eg_201229_181208.json eg_210506_125048.json
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">conf_route</span><span class="p">(</span><span class="s2">&quot;/guide2/&quot;</span><span class="p">,</span> <span class="n">nobuild</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">guide_api</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">conf</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;conf&quot;</span><span class="p">]</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;city_data2&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">user</span><span class="p">}</span>
 </pre></div>
@@ -539,12 +540,12 @@ eg_201229_181208.json eg_210506_125048.json
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>INFO:root:{&#39;name&#39;: &#39;Los Angeles&#39;, &#39;country&#39;: &#39;United States&#39;, &#39;sites&#39;: [&#39;universal studio&#39;, &#39;griffith observatory&#39;, &#39;union station&#39;]}
+<pre>INFO:root:run config	la.json on route	/guide2/la/
+INFO:root:run config	shanghai.json on route	/guide2/shanghai/
+INFO:root:{&#39;name&#39;: &#39;Los Angeles&#39;, &#39;country&#39;: &#39;United States&#39;, &#39;sites&#39;: [&#39;universal studio&#39;, &#39;griffith observatory&#39;, &#39;union station&#39;]}
 INFO:root:run config	la.json on route	/guide/la/
 INFO:root:{&#39;name&#39;: &#39;Shanghai&#39;, &#39;country&#39;: &#39;China&#39;, &#39;sites&#39;: [&#39;french concession&#39;, &#39;xin tiandi&#39;, &#39;disney resort&#39;]}
 INFO:root:run config	shanghai.json on route	/guide/shanghai/
-INFO:root:run config	la.json on route	/guide2/la/
-INFO:root:run config	shanghai.json on route	/guide2/shanghai/
 </pre>
 </div>
 </div>
@@ -566,43 +567,6 @@ INFO:root:run config	shanghai.json on route	/guide2/shanghai/
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre> * Serving Flask app &#34;test_flaskonf&#34; (lazy loading)
- * Environment: production
-   WARNING: This is a development server. Do not use it in a production deployment.
-   Use a production WSGI server instead.
- * Debug mode: off
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>INFO:werkzeug: * Running on http://0.0.0.0:9727/ (Press CTRL+C to quit)
-DEBUG:root:loading examples from ../tests/examples/guide_la
-INFO:werkzeug:127.0.0.1 - - [06/May/2021 12:53:20] &#34;<span class="ansi-white-fg">GET /guide/la/ HTTP/1.1</span>&#34; 200 -
-ERROR:root:Traceback (most recent call last):
-  File &#34;&lt;ipython-input-19-24a00b29e23c&gt;&#34;, line 111, in wrapper
-    result = f(inputs)
-  File &#34;&lt;ipython-input-25-32c7827afe5e&gt;&#34;, line 8, in guide_api
-    user = data[&#34;user&#34;]
-KeyError: &#39;user&#39;
-
-INFO:werkzeug:127.0.0.1 - - [06/May/2021 12:54:05] &#34;<span class="ansi-magenta-intense-fg ansi-bold">POST /guide/la/ HTTP/1.1</span>&#34; 500 -
-INFO:werkzeug:127.0.0.1 - - [06/May/2021 12:54:37] &#34;<span class="ansi-white-fg">POST /guide/la/ HTTP/1.1</span>&#34; 200 -
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
